@@ -26,11 +26,9 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
     const addFriend = async (email: string) => {
         try {
             const validatedEmail = addFriendValidator.parse({ email })
-            
-            await axios.post('/api/friends', {
+            await axios.post('/api/friends/add', {
                 email:validatedEmail
             })
-
             setShowSuccessMsg(true)
         } catch (error) {
             console.error(error)            
@@ -60,11 +58,14 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
         </div>
             {errors.email && 
         <p className="mt-2 text-xs border border-red-500 rounded-md px-3  bg-red-100 font-bold  text-red-600">
-            <span className="">
         {errors.email.message}
-            </span>
         </p>
-            }
+        }
+        {showSuccessMsg &&
+        <p className="mt-2 text-xs border border-green-500 rounded-md px-3  bg-green-100 font-bold  text-green-600">
+       Friend request sent
+        </p>
+        }
     </form>
 };
 
