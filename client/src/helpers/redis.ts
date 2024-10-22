@@ -9,7 +9,7 @@ export async function fetchRedis(
 ) {
 
     const commandUrl = `${upstashRedisUrl}/${command}/${args.join('/')}`
-    const reponse = await fetch(commandUrl,
+    const response = await fetch(commandUrl,
             {
                 headers: {
                     Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
@@ -17,5 +17,9 @@ export async function fetchRedis(
                 cache:"no-store"
             }
 
-        )
+    )
+    
+    if (!response.ok) throw new Error(`Error while executing Redis command `)
+    const data = await response.json()
+    return data.results 
 }
