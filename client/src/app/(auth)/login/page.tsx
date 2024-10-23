@@ -21,7 +21,7 @@ const Page: FC<pageProps> = () => {
       await Promise.race([signIn("google"), timeout]);
     } catch (error) {
       console.error(error);
-      toast.error(error?.message || "Something went wrong with your login!");
+      toast.error((error as Error)?.message || "Something went wrong with your login!");
       return;
     } 
   };
