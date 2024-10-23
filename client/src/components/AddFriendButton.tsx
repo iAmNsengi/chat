@@ -29,9 +29,9 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
             setShowSuccessMsg(true)
         } catch (error) {
             console.error(error)
-            toast.error((error as AxiosError)?.message || "An error occurred")
+            toast.error((error as AxiosError)?.message)
             if (error instanceof z.ZodError) return setError('email', { message: error.message })
-            if (error instanceof AxiosError) return setError('email', { message: error.response?.data?.message || "An error occurred" })
+            if (error instanceof AxiosError) return setError('email', { message: error.response?.data || "Axios error!" })
             setError('email', { message: "Something Went Wrong" })
         } finally {
             setShowLoading(false)
