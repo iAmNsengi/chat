@@ -20,7 +20,6 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const {register,  handleSubmit, setError, formState:{errors}} = useForm<FormData>({resolver:zodResolver(addFriendValidator)})
 
-
     const addFriend = async (email: string) => {
         try {
             const validatedEmail = addFriendValidator.parse({ email })
@@ -30,13 +29,13 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
             setShowSuccessMsg(true)
         } catch (error) {
             console.error(error)
+            toast.error((error as AxiosError)?.message || "An error occurred")
             if (error instanceof z.ZodError) return setError('email', { message: error.message })
-            if (error instanceof AxiosError) return setError('email', { message: error.response?.data })
+            if (error instanceof AxiosError) return setError('email', { message: error.response?.data?.message || "An error occurred" })
             setError('email', { message: "Something Went Wrong" })
         } finally {
             setShowLoading(false)
         }
-        
     }
 
     const onSubmit = (data: FormData) => {
@@ -62,7 +61,6 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
             
         <Button type="submit" className="px-5" isLoading={showLoading}>Add</Button>
         </div>
-         
     </form>
 };
 
