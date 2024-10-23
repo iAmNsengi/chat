@@ -5,7 +5,8 @@ import { signIn } from "next-auth/react";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
 
-interface pageProps {}
+interface pageProps { }
+
 
 const Page: FC<pageProps> = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -13,13 +14,16 @@ const Page: FC<pageProps> = () => {
   const loginwithGoogle = async () => {
     setIsLoading(true);
     try {
-      await signIn("google");
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Login timed out")), 5000) 
+      );
+
+      await Promise.race([signIn("google"), timeout]);
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong with your login!");
-    } finally {
-      setIsLoading(false);
-    }
+      toast.error((error as Error)?.message || "Something went wrong with your login!");
+      return;
+    } 
   };
   return (
     <>

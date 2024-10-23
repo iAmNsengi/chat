@@ -8,12 +8,9 @@ import { z } from "zod";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CrossIcon, UtensilsCrossed, X } from "lucide-react";
 
 
-interface AddFriendButtonProps {
-    
-}
+interface AddFriendButtonProps {}
 
 type FormData = z.infer<typeof addFriendValidator>
 
@@ -23,25 +20,19 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const {register,  handleSubmit, setError, formState:{errors}} = useForm<FormData>({resolver:zodResolver(addFriendValidator)})
 
-
     const addFriend = async (email: string) => {
         try {
             const validatedEmail = addFriendValidator.parse({ email })
             await axios.post('/api/friends/add', {
-                email:validatedEmail
+                email: validatedEmail
             })
             setShowSuccessMsg(true)
         } catch (error) {
-            console.error(error)            
-            if (error instanceof z.ZodError) {
-                setError('email', {message:error.message})
-                return
-            }
-            if (error instanceof AxiosError) {
-                setError('email', { message: error.response?.data })
-                return
-            }
-            setError('email', {message: "Something Went Wrong"})
+            console.error(error)
+            toast.error((error as AxiosError)?.message)
+            if (error instanceof z.ZodError) return setError('email', { message: error.message })
+            if (error instanceof AxiosError) return setError('email', { message: error.response?.data || "Axios error!" })
+            setError('email', { message: "Something Went Wrong" })
         } finally {
             setShowLoading(false)
         }
@@ -70,7 +61,6 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
             
         <Button type="submit" className="px-5" isLoading={showLoading}>Add</Button>
         </div>
-         
     </form>
 };
 
